@@ -1,0 +1,16 @@
+﻿namespace ChallengeApi.Entities
+{
+    public class Portada
+    {
+       public int Id { get; set; }
+        public string Ruta { get; set; } = string.Empty;
+        public float Peso { get; set; }
+        public int  Ancho { get; set; }
+        public int  Alto { get; set; } 
+        public int PeliculaID { get; set; }
+        // Relación inversa con Pelicula
+        public Pelicula Pelicula { get; set; } = null!;
+        public string Url { get; set; } = string.Empty;
+
+    }
+}
