@@ -6,7 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.OData.Routing.Controllers;
 
-[Route("odata/[controller]")]
+[Route("odata/Productoras")]
 [ApiController]
 public class ProductoraController : ODataController
 {
@@ -44,7 +44,7 @@ public class ProductoraController : ODataController
         await _context.SaveChangesAsync();
 
         var resultDto = _mapper.Map<ProductoraDto>(entity);
-        return CreatedAtAction(nameof(GetById), new { id = resultDto.Id }, resultDto);
+        return CreatedAtAction(nameof(GetById), new { key = resultDto.Id }, resultDto);
     }
 
     [HttpPut("{key}")]

@@ -12,5 +12,7 @@
         public Pelicula Pelicula { get; set; } = null!;
         public string Url { get; set; } = string.Empty;
 
+        public string PeliculaNombre { get; set; } = string.Empty;
+
     }
 }

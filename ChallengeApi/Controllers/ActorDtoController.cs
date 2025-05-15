@@ -8,7 +8,7 @@ using Microsoft.AspNetCore.OData.Routing.Controllers;
 
 namespace ChallengeApi.Controllers
 {
-    [Route("odata/[controller]")]
+    [Route("odata/Actores")]
     [ApiController]
     public class ActorController : ODataController
     {
@@ -73,7 +73,7 @@ namespace ChallengeApi.Controllers
             // Actualizás el DTO con el ID generado
             actorDto.Id = actor.Id;
 
-            return CreatedAtAction(nameof(GetActorDto), new { id = actor.Id }, actorDto);
+            return CreatedAtAction(nameof(GetActorDto), new { key = actor.Id }, actorDto);
         }
 
 

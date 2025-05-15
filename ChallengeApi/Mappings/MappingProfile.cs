@@ -23,9 +23,17 @@ namespace ChallengeApi.Mappings
                 .ForMember(dest => dest.Actores, opt => opt.MapFrom(src => src.Actores.Select(a => a.Nombre)));
 
             // Mapeo entidad Portada -> DTO
-            CreateMap<Portada, PortadaDto>();
-            //Mapeo Productora 
+            CreateMap<Portada, PortadaDto>()
+                .ForMember(dest => dest.PeliculaNombre, opt => opt.MapFrom(src => src.Pelicula.Nombre));
+
+            // Entrada: ProductoraCrearDto -> Productora
             CreateMap<ProductoraCrearDto, Productora>();
+
+            // Salida: Productora -> ProductoraDto 
+            CreateMap<Productora, ProductoraDto>();
+
+            // Salida: Genero -> GeneroDto
+            CreateMap<Genero, GeneroDto>();
         }
     }
 }

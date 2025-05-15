@@ -15,7 +15,7 @@ using Microsoft.AspNetCore.OData.Query;
 namespace ChallengeApi.Controllers
 {
 
-    [Route("odata/[controller]")]
+    [Route("odata/Peliculas")]
     [ApiController]
     public class PeliculaController : ODataController
     {
@@ -39,7 +39,17 @@ namespace ChallengeApi.Controllers
                 .Include(p => p.Actores)
                 .ToListAsync();
 
-            return _mapper.Map<List<PeliculaDto>>(peliculas);
+            var mappedPeliculas = _mapper.Map<List<PeliculaDto>>(peliculas);
+
+            foreach (var peli in mappedPeliculas)
+            {
+                Console.WriteLine($"Pelicula: {peli.Nombre}");
+                Console.WriteLine($"  Portada URL: {peli.Portada?.Url}");
+                Console.WriteLine($"  Portada Ancho: {peli.Portada?.Ancho}");
+                Console.WriteLine($"  Portada Alto: {peli.Portada?.Alto}");
+            }
+
+            return mappedPeliculas;
         }
 
         // GET: api/PeliculaDto/5
@@ -57,7 +67,7 @@ namespace ChallengeApi.Controllers
             {
                 return NotFound();
             }
-
+            
             return _mapper.Map<PeliculaDto>(pelicula);
         }
 
@@ -71,58 +81,67 @@ namespace ChallengeApi.Controllers
                 Duracion = dto.Duracion,
                 Puntuacion = dto.Puntuacion,
                 PresupuestoUsd = dto.PresupuestoUsd,
-                Portada = new Portada { Url = dto.PortadaUrl },
                 Generos = new List<Genero>(),
-                Actores = new List<Actor>()
+                Actores = new List<Actor>(),
+                Portada = new Portada
+                {
+                    Ruta = dto.Portada.Ruta,
+                    Peso = dto.Portada.Peso,
+                    Ancho = dto.Portada.Ancho,
+                    Alto = dto.Portada.Alto,
+                    Url = dto.Portada.Url,
+                    PeliculaNombre = dto.Portada.PeliculaNombre
+                    // No asignar PeliculaID aquí, se hace después de guardar
+                }
             };
 
-            // Buscar o crear productora
-            var productora = await _context.Productoras
-                .FirstOrDefaultAsync(p => p.Nombre == dto.ProductoraNombre);
-
+            // Manejo productora
+            var productora = await _context.Productoras.FirstOrDefaultAsync(p => p.Nombre == dto.ProductoraNombre);
             if (productora == null)
             {
                 productora = new Productora { Nombre = dto.ProductoraNombre };
                 _context.Productoras.Add(productora);
+                await _context.SaveChangesAsync(); // Guarda para generar ID si lo necesitas
             }
-
             pelicula.Productora = productora;
 
-            // Buscar o crear géneros
+            // Manejo géneros
             foreach (var generoNombre in dto.Generos.Distinct())
             {
-                var genero = await _context.Generos
-                    .FirstOrDefaultAsync(g => g.Nombre == generoNombre);
-
+                var genero = await _context.Generos.FirstOrDefaultAsync(g => g.Nombre == generoNombre);
                 if (genero == null)
                 {
                     genero = new Genero { Nombre = generoNombre };
                     _context.Generos.Add(genero);
+                    await _context.SaveChangesAsync();
                 }
-
                 pelicula.Generos.Add(genero);
             }
 
-            // Buscar o crear actores
+            // Manejo actores
             foreach (var actorNombre in dto.Actores.Distinct())
             {
-                var actor = await _context.Actores
-                    .FirstOrDefaultAsync(a => a.Nombre == actorNombre);
-
+                var actor = await _context.Actores.FirstOrDefaultAsync(a => a.Nombre == actorNombre);
                 if (actor == null)
                 {
                     actor = new Actor { Nombre = actorNombre };
                     _context.Actores.Add(actor);
+                    await _context.SaveChangesAsync();
                 }
-
                 pelicula.Actores.Add(actor);
             }
 
             _context.Peliculas.Add(pelicula);
             await _context.SaveChangesAsync();
 
-            return CreatedAtAction(nameof(GetPelicula), new { id = pelicula.Id }, pelicula);
+            // Ahora que la pelicula tiene Id asignado, vinculamos el PeliculaID en portada
+            pelicula.Portada.PeliculaID = pelicula.Id;
+            await _context.SaveChangesAsync();
+
+            var peliculaDto = _mapper.Map<PeliculaDto>(pelicula);
+            return CreatedAtAction(nameof(GetPelicula), new { key = pelicula.Id }, peliculaDto);
         }
+
 
         [HttpPut("{key}")]
         public async Task<IActionResult> PutPelicula(int key, PeliculaDto dto)

@@ -4,6 +4,7 @@ using ChallengeApi.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace ChallengeApi.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250515204728_CambiarPuntuacionAFloat")]
+    partial class CambiarPuntuacionAFloat
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -119,8 +122,8 @@ namespace ChallengeApi.Migrations
                     b.Property<int>("ProductoraId")
                         .HasColumnType("int");
 
-                    b.Property<decimal>("Puntuacion")
-                        .HasColumnType("decimal(65,30)");
+                    b.Property<float>("Puntuacion")
+                        .HasColumnType("float");
 
                     b.HasKey("Id");
 
@@ -145,10 +148,6 @@ namespace ChallengeApi.Migrations
 
                     b.Property<int>("PeliculaID")
                         .HasColumnType("int");
-
-                    b.Property<string>("PeliculaNombre")
-                        .IsRequired()
-                        .HasColumnType("longtext");
 
                     b.Property<float>("Peso")
                         .HasColumnType("float");
