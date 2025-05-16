@@ -39,17 +39,9 @@ namespace ChallengeApi.Controllers
                 .Include(p => p.Actores)
                 .ToListAsync();
 
-            var mappedPeliculas = _mapper.Map<List<PeliculaDto>>(peliculas);
 
-            foreach (var peli in mappedPeliculas)
-            {
-                Console.WriteLine($"Pelicula: {peli.Nombre}");
-                Console.WriteLine($"  Portada URL: {peli.Portada?.Url}");
-                Console.WriteLine($"  Portada Ancho: {peli.Portada?.Ancho}");
-                Console.WriteLine($"  Portada Alto: {peli.Portada?.Alto}");
-            }
 
-            return mappedPeliculas;
+            return _mapper.Map<List<PeliculaDto>>(peliculas);
         }
 
         // GET: api/PeliculaDto/5
@@ -89,9 +81,7 @@ namespace ChallengeApi.Controllers
                     Peso = dto.Portada.Peso,
                     Ancho = dto.Portada.Ancho,
                     Alto = dto.Portada.Alto,
-                    Url = dto.Portada.Url,
-                    PeliculaNombre = dto.Portada.PeliculaNombre
-                    // No asignar PeliculaID aquí, se hace después de guardar
+                    Url = dto.Portada.Url
                 }
             };
 
@@ -136,9 +126,19 @@ namespace ChallengeApi.Controllers
 
             // Ahora que la pelicula tiene Id asignado, vinculamos el PeliculaID en portada
             pelicula.Portada.PeliculaID = pelicula.Id;
+            _context.Portadas.Update(pelicula.Portada); 
             await _context.SaveChangesAsync();
 
-            var peliculaDto = _mapper.Map<PeliculaDto>(pelicula);
+            var peliculaConPortada = await _context.Peliculas
+                .Include(p => p.Portada)
+                .Include(p => p.Productora)
+                .Include(p => p.Generos)
+                .Include(p => p.Actores)
+                .FirstOrDefaultAsync(p => p.Id == pelicula.Id);
+
+            
+
+            var peliculaDto = _mapper.Map<PeliculaDto>(peliculaConPortada);
             return CreatedAtAction(nameof(GetPelicula), new { key = pelicula.Id }, peliculaDto);
         }
 

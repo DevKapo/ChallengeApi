@@ -41,7 +41,6 @@ builder.Services.AddControllers()
     .AddJsonOptions(options =>
     {
         options.JsonSerializerOptions.WriteIndented = true;
-        options.JsonSerializerOptions.ReferenceHandler = System.Text.Json.Serialization.ReferenceHandler.IgnoreCycles;
     });
 
 //  Fuerza la cultura con punto decimal
@@ -69,6 +68,7 @@ static IEdmModel GetEdmModel()
 {
     var builder = new ODataConventionModelBuilder();
     builder.EntitySet<PeliculaDto>("Peliculas");
+    builder.EntityType<PeliculaDto>().ComplexProperty(p => p.Portada);
     builder.EntitySet<ProductoraDto>("Productoras");
     builder.EntitySet<GeneroDto>("Generos");
     builder.EntitySet<ActorDto>("Actores");

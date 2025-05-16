@@ -2,17 +2,17 @@
 {
     public class Portada
     {
-       public int Id { get; set; }
+        public int Id { get; set; }
         public string Ruta { get; set; } = string.Empty;
-        public float Peso { get; set; }
-        public int  Ancho { get; set; }
-        public int  Alto { get; set; } 
+        public decimal Peso { get; set; }
+        public int Ancho { get; set; }
+        public int Alto { get; set; }
         public int PeliculaID { get; set; }
-        // Relación inversa con Pelicula
+
+        // Relación de navegación EF Core
         public Pelicula Pelicula { get; set; } = null!;
+
+        // URL calculada en DTO o servicio, no almacenada
         public string Url { get; set; } = string.Empty;
-
-        public string PeliculaNombre { get; set; } = string.Empty;
-
     }
 }

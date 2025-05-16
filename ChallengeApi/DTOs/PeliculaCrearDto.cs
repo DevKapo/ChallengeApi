@@ -9,7 +9,7 @@
         public string ProductoraNombre { get; set; } = string.Empty;
         public string PortadaUrl { get; set; } = string.Empty;
 
-        public PortadaDto Portada { get; set; } 
+        public PortadaDto Portada { get; set; } = new();
 
         public List<string> Generos { get; set; } = new();
         public List<string> Actores { get; set; } = new();

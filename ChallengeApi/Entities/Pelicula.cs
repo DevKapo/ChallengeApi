@@ -11,7 +11,7 @@
         public int ProductoraId { get; set; }
         public Productora Productora { get; set; } = null!;
         // Relación con Portada
-        public Portada Portada { get; set; } = null!;
+        public Portada Portada { get; set; } = new();
         // Relación con Géneros (puede tener varios)
         public ICollection<Genero> Generos { get; set; } = new List<Genero>();
         // Relación con Actores (puede tener varios)

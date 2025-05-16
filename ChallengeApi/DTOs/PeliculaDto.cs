@@ -12,7 +12,7 @@
         public string ProductoraNombre { get; set; } = string.Empty;
 
         // Relación con Portada
-        public PortadaDto Portada { get; set; }
+        public PortadaDto Portada { get; set; } = new();
 
         // Relación con Generos
         public List<string> Generos { get; set; } = new();
