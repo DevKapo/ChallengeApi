@@ -9,14 +9,16 @@ using ChallengeApi.DTOs;
 
 var builder = WebApplication.CreateBuilder(args);
 
+builder.WebHost.UseUrls("http://*:5046");
+
 // Agregar servicios de Swagger
 builder.Services.AddEndpointsApiExplorer(); // Necesario para generar la documentación de la API
 builder.Services.AddSwaggerGen(options =>
 {
     options.SwaggerDoc("v1", new OpenApiInfo{
-        Title = "API de Películas",
+        Title = "API de Peliculas",
         Version = "v1", // Versión de la API
-        Description = "Una API para gestionar películas y sus detalles.",
+        Description = "Una API para gestionar peliculas y sus caracteristicas.",
     });
 
     // Configurar el archivo de documentación Swagger en formato OpenAPI 3.0
@@ -54,15 +56,13 @@ System.Globalization.CultureInfo.DefaultThreadCurrentUICulture = cultureInfo;
 var app = builder.Build();
 
 // Configuración de Swagger UI
-if (app.Environment.IsDevelopment())
-{
     app.UseSwagger();
     app.UseSwaggerUI(c =>
     {
         c.SwaggerEndpoint("/swagger/v1/swagger.json", "API v1");
         c.RoutePrefix = string.Empty;  // dejo esto vacio para que swagger cargue en la raiz 
     });
-}
+
 // Crear el modelo EDM para OData
 static IEdmModel GetEdmModel()
 {
@@ -76,7 +76,6 @@ static IEdmModel GetEdmModel()
 }
 
 
-app.UseHttpsRedirection();
 app.UseAuthorization();
 app.MapControllers();
 
