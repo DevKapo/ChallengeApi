@@ -1,0 +1,28 @@
+﻿
+
+services:
+  mysql:
+    image: mysql:8.0
+    container_name: mysql_pelicula
+    restart: unless-stopped
+    environment:
+      MYSQL_ROOT_PASSWORD: admin
+      MYSQL_DATABASE: PeliculaDB
+    ports:
+      - "3307:3306"
+    volumes:
+      - mysql_data:/var/lib/mysql
+
+  api:
+    build: .
+    container_name: challengeapi
+    restart: unless-stopped
+    depends_on:
+      - mysql
+    ports:
+      - "5046:5046"
+    environment:
+      ConnectionStrings__Conexion: "Server=mysql;Port=3306;Database=PeliculaDB;User=root;Password=admin;"
+
+volumes:
+  mysql_data:
